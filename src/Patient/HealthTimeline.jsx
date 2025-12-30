@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Patientdashboard from "./Patientdashboard";
+import { motion, AnimatePresence } from "framer-motion";
 
 function HealthTimeline() {
   const [events, setEvents] = useState([
@@ -38,9 +39,18 @@ function HealthTimeline() {
     significance: "",
   });
 
-  const handleAddEvent = () => {
-    setEvents([...events, newEvent]);
+  const heading = "Health History Timeline".split(" ");
 
+  const handleAddEvent = () => {
+    if (
+      !newEvent.month ||
+      !newEvent.year ||
+      !newEvent.type ||
+      !newEvent.title
+    )
+      return;
+
+    setEvents([...events, newEvent]);
     setNewEvent({
       month: "",
       year: "",
@@ -51,207 +61,187 @@ function HealthTimeline() {
       Date: "",
       significance: "",
     });
-
     setShowAddModal(false);
   };
 
   return (
     <Patientdashboard>
-      <div className="w-full max-w-6xl mx-auto py-12 px-6">
-
-        {/* ======================= ADD TIMELINE POPUP ======================= */}
-        {showAddModal && (
-          <div className="
-            fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm 
-            flex justify-center items-center z-50
-          ">
-            <div className="bg-white w-full max-w-3xl p-8 rounded-2xl shadow-xl border">
-
-              <h2 className="text-2xl font-semibold mb-6">Add Timeline Event</h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                {/* Month */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">Month</label>
-                  <input
-                    type="text"
-                    value={newEvent.month}
-                    onChange={(e) => setNewEvent({ ...newEvent, month: e.target.value })}
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
-
-                {/* Year */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">Year</label>
-                  <input
-                    type="text"
-                    value={newEvent.year}
-                    onChange={(e) => setNewEvent({ ...newEvent, year: e.target.value })}
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
-
-                {/* Type */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">Type</label>
-                  <input
-                    type="text"
-                    value={newEvent.type}
-                    onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
-
-                {/* Title */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">Title</label>
-                  <input
-                    type="text"
-                    value={newEvent.title}
-                    onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
-
-                {/* Description */}
-                <div className="md:col-span-2">
-                  <label className="text-gray-600 text-sm mb-1 block">Description</label>
-                  <textarea
-                    rows="3"
-                    value={newEvent.desc}
-                    onChange={(e) => setNewEvent({ ...newEvent, desc: e.target.value })}
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  ></textarea>
-                </div>
-
-                {/* Doctor */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">Doctor</label>
-                  <input
-                    type="text"
-                    value={newEvent.doctor}
-                    onChange={(e) => setNewEvent({ ...newEvent, doctor: e.target.value })}
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
-
-                {/* Date */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">Date</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. November 10, 2024"
-                    value={newEvent.Date}
-                    onChange={(e) => setNewEvent({ ...newEvent, Date: e.target.value })}
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
-
-                {/* Significance */}
-                <div className="md:col-span-2">
-                  <label className="text-gray-600 text-sm mb-1 block">Significance</label>
-                  <input
-                    type="text"
-                    value={newEvent.significance}
-                    onChange={(e) =>
-                      setNewEvent({ ...newEvent, significance: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
-              </div>
-
-              {/* BUTTONS */}
-              <div className="flex justify-end gap-4 mt-8">
-                <button
-                  onClick={() => setShowAddModal(false)}
-                  className="px-6 py-2 rounded-lg bg-gray-300 hover:bg-gray-400"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  onClick={handleAddEvent}
-                  className="px-6 py-2 rounded-lg bg-indigo-900 text-white hover:bg-indigo-950"
-                >
-                  Add Event
-                </button>
-              </div>
-
-            </div>
-          </div>
-        )}
-
-        {/* ======================= HEADER ======================= */}
-        <h1 className="text-3xl text-center font-bold mt-[-40px] mb-5 text-gray-800">
-          Health History Timeline
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-10"
+      >
+        {/* HEADER */}
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-4">
+          {heading.map((word, i) => (
+            <motion.span
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.12 }}
+              className="inline-block mr-2"
+            >
+              {word}
+            </motion.span>
+          ))}
         </h1>
 
-        <p className="text-gray-600 text-center mb-10">
-          Your complete medical journey at a glance — unified history
-        </p>
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="text-center text-gray-600 mb-12"
+        >
+          Your complete medical journey at a glance
+        </motion.p>
 
-        {/* ======================= TIMELINE ======================= */}
-        <div className="relative grid grid-cols-[120px,1fr] gap-16">
-          <div className="absolute left-[55px] top-0 w-[2px] bg-gray-300 h-full"></div>
+        {/* ================= DESKTOP TIMELINE ================= */}
+        <div className="hidden md:block relative">
+          <div className="absolute left-[110px] top-0 h-full w-[2px] bg-gray-300"></div>
 
+          <div className="space-y-16">
+            {events.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: index * 0.25 }}
+                className="grid grid-cols-[220px,1fr] gap-12"
+              >
+                {/* DATE */}
+                <div className="flex items-center justify-end gap-4">
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-800">{item.month}</p>
+                    <p className="text-gray-500">{item.year}</p>
+                  </div>
+                  <div className="w-6 h-6 bg-indigo-600 rounded-full border-4 border-white shadow-md"></div>
+                </div>
+
+                {/* CARD */}
+                <div className="bg-white rounded-2xl shadow-md p-6 border">
+                  <span className="text-sm font-semibold text-[#215B63]">
+                    {item.type}
+                  </span>
+
+                  <h2 className="text-xl font-semibold mt-3 text-gray-900">
+                    {item.title}
+                  </h2>
+
+                  <p className="text-gray-600 mt-3 leading-relaxed">
+                    {item.desc}
+                  </p>
+
+                  <div className="flex gap-6 mt-4 text-gray-500">
+                    <span>{item.doctor}</span>
+                    <span>{item.Date}</span>
+                  </div>
+
+                  <p className="text-sm text-orange-500 mt-4">
+                    ● {item.significance}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* ================= MOBILE TIMELINE ================= */}
+        <div className="md:hidden space-y-6">
           {events.map((item, index) => (
-            <div key={index} className="contents">
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 25 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.25 }}
+              className="bg-white rounded-2xl shadow-md border p-5"
+            >
+              <p className="text-sm font-semibold">
+                {item.month} {item.year}
+              </p>
 
-              <div className="relative flex flex-col items-center">
-                <div className="w-6 h-6 rounded-full border-4 border-white shadow-md bg-indigo-500"></div>
+              <span className="text-xs font-semibold text-[#215B63]">
+                {item.type}
+              </span>
 
-                <div className="mr-40 mt-[-22px]">
-                  <p className="text-sm font-semibold text-gray-800">{item.month}</p>
-                  <p className="text-sm text-gray-500">{item.year}</p>
-                </div>
-              </div>
+              <h2 className="text-lg font-semibold mt-2 text-gray-900">
+                {item.title}
+              </h2>
 
-              <div className="bg-white w-full max-w-4xl shadow-md mb-5 rounded-2xl p-6 border border-gray-100">
-                <span className="text-[#215B63] text-sm font-semibold flex items-center gap-3">
-                  <span className="w-3 h-3 bg-[#215B63] rounded-full"></span>
-                  {item.type}
-                </span>
+              <p className="text-gray-600 mt-3 text-sm leading-relaxed">
+                {item.desc}
+              </p>
 
-                <h2 className="text-xl font-semibold mt-4 text-gray-900">
-                  {item.title}
-                </h2>
-
-                <p className="text-gray-600 text-[16px] leading-relaxed mt-4">
-                  {item.desc}
-                </p>
-
-                <div className="flex items-center flex-wrap gap-8 mt-4 text-[16px] text-gray-500">
-                  <span className="flex items-center gap-3">
-                    <i className="bi bi-person-circle text-blue-500"></i>
-                    {item.doctor}
-                  </span>
-
-                  <span className="flex items-center gap-3">
-                    <i className="bi bi-calendar-check text-blue-500"></i>
-                    {item.Date}
-                  </span>
-                </div>
-
-                <p className="text-sm text-orange-500 flex items-center gap-2 mt-4">
-                  <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
-                  {item.significance}
-                </p>
-              </div>
-            </div>
+              <p className="text-xs text-orange-500 mt-3">
+                ● {item.significance}
+              </p>
+            </motion.div>
           ))}
         </div>
 
-        {/* ======================= ADD BUTTON ======================= */}
+        {/* ================= ADD BUTTON ================= */}
         <button
           onClick={() => setShowAddModal(true)}
           className="fixed bottom-5 right-20 bg-indigo-900 hover:bg-indigo-800 text-white rounded-xl w-12 h-12 flex items-center justify-center shadow-2xl text-xl"
         >
-          <i className="bi bi-plus-lg"></i>
+          +
         </button>
-      </div>
+
+        {/* ================= ADD MODAL ================= */}
+        <AnimatePresence>
+          {showAddModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50"
+            >
+              <motion.div
+                initial={{ scale: 0.85, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.85, opacity: 0 }}
+                className="bg-white w-full max-w-xl p-8 rounded-2xl shadow-xl"
+              >
+                <h2 className="text-2xl font-semibold mb-6">
+                  Add Timeline Event
+                </h2>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {Object.keys(newEvent).map((field) => (
+                    <input
+                      key={field}
+                      placeholder={field}
+                      value={newEvent[field]}
+                      onChange={(e) =>
+                        setNewEvent({
+                          ...newEvent,
+                          [field]: e.target.value,
+                        })
+                      }
+                      className="border border-gray-300 rounded-lg px-3 py-2"
+                    />
+                  ))}
+                </div>
+
+                <div className="flex justify-end gap-4 mt-6">
+                  <button
+                    onClick={() => setShowAddModal(false)}
+                    className="px-6 py-2 bg-gray-300 rounded-lg"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleAddEvent}
+                    className="px-6 py-2 bg-indigo-900 text-white rounded-lg"
+                  >
+                    Add Event
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </Patientdashboard>
   );
 }

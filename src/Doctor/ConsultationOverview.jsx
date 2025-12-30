@@ -9,10 +9,11 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+
+import { motion } from "framer-motion";
 import Doctordashboard from "./Doctordashboard";
 
 function ConsultationOverview() {
-  // SAMPLE DATA
   const data = [
     { day: "Mon", consultations: 85, appointments: 50 },
     { day: "Tue", consultations: 40, appointments: 45 },
@@ -25,54 +26,97 @@ function ConsultationOverview() {
 
   return (
     <Doctordashboard>
-    <div className="w-full max-w-6xl mx-auto p-8">
-      
-      {/* PAGE TITLE */}
-      <h1 className="text-3xl font-bold text-gray-800 mt-[-10px] mb-8">
-        Consultation Overview
-      </h1>
+      {/* PAGE */}
+      <motion.div
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
+      >
+        {/* TITLE */}
+        <motion.h1
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8"
+        >
+          Consultation Overview
+        </motion.h1>
 
-      {/* CHART CARD */}
-      <div className="bg-white shadow-xl border border-gray-100 rounded-2xl p-8">
+        {/* CHART CARD */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          className="bg-white shadow-xl border border-gray-100 rounded-2xl p-4 sm:p-6 lg:p-8"
+        >
+          {/* HEADER BAR */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.6 }}
+            className="
+              flex flex-col sm:flex-row
+              sm:items-center sm:justify-between
+              gap-4 mb-6 sm:mb-10
+            "
+          >
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+              Weekly Consultation Statistics
+            </h2>
 
-        {/* HEADER */}
-        <div className="flex items-center justify-between mb-10">
-          <h2 className="text-xl font-semibold text-gray-800">
-            Weekly Consultation Statistics
-          </h2>
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm">
+              <span className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-green-600"></span>
+                Medical Consultations
+              </span>
 
-          {/* LEGEND */}
-          <div className="flex items-center gap-6 text-sm">
-            <span className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-green-600"></span>
-              Medical Consultations
-            </span>
+              <span className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-emerald-300"></span>
+                Appointments
+              </span>
+            </div>
+          </motion.div>
 
-            <span className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-emerald-300"></span>
-              Appointments
-            </span>
-          </div>
-        </div>
+          {/* CHART */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="
+              w-full
+              h-[260px]
+              sm:h-[320px]
+              md:h-[380px]
+              lg:h-[400px]
+            "
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data} barSize={40}>
+                <CartesianGrid strokeDasharray="3 3" className="opacity-40" />
+                <XAxis dataKey="day" tick={{ fill: "#555" }} />
+                <YAxis tick={{ fill: "#555" }} />
+                <Tooltip />
+                <Legend />
 
-        {/* CHART */}
-        <div className="w-full h-[400px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} barSize={45}>
-              <CartesianGrid strokeDasharray="3 3" className="opacity-40" />
-              <XAxis dataKey="day" tick={{ fill: "#555" }} />
-              <YAxis tick={{ fill: "#555" }} />
-              <Tooltip />
-              <Legend />
+                <Bar
+                  dataKey="consultations"
+                  fill="#059669"
+                  radius={[6, 6, 0, 0]}
+                  className="transition-all duration-300 hover:opacity-80"
+                />
 
-              <Bar dataKey="consultations" fill="#059669" radius={[6, 6, 0, 0]} />
-              <Bar dataKey="appointments" fill="#6ee7b7" radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-      </div>
-    </div>
+                <Bar
+                  dataKey="appointments"
+                  fill="#6ee7b7"
+                  radius={[6, 6, 0, 0]}
+                  className="transition-all duration-300 hover:opacity-80"
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </motion.div>
+        </motion.div>
+      </motion.div>
     </Doctordashboard>
   );
 }

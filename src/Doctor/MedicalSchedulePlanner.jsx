@@ -1,5 +1,33 @@
 import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Doctordashboard from "./Doctordashboard";
+
+const pageVariant = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
+};
+
+const listVariant = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+    },
+  },
+};
+
+const itemVariant = {
+  hidden: { opacity: 0, y: 18 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.45, ease: "easeOut" },
+  },
+};
 
 function MedicalSchedulePlanner() {
   const statusStyles = {
@@ -8,16 +36,17 @@ function MedicalSchedulePlanner() {
     Completed: "bg-gray-200 text-gray-700",
   };
 
-  // Load saved appointments from localStorage
   const loadAppointments = () => {
     const saved = localStorage.getItem("doctor-appointments");
-    return saved ? JSON.parse(saved) : [
-      { name: "Sarah Johnson", type: "Checkup", time: "09:00", status: "Confirmed" },
-      { name: "Michael Chen", type: "Consultation", time: "10:30", status: "Pending" },
-      { name: "Emily Davis", type: "Follow-up", time: "11:00", status: "Confirmed" },
-      { name: "James Wilson", type: "Checkup", time: "14:00", status: "Completed" },
-      { name: "Lisa Anderson", type: "Health Review", time: "15:30", status: "Confirmed" },
-    ];
+    return saved
+      ? JSON.parse(saved)
+      : [
+          { name: "Sarah Johnson", type: "Checkup", time: "09:00", status: "Confirmed" },
+          { name: "Michael Chen", type: "Consultation", time: "10:30", status: "Pending" },
+          { name: "Emily Davis", type: "Follow-up", time: "11:00", status: "Confirmed" },
+          { name: "James Wilson", type: "Checkup", time: "14:00", status: "Completed" },
+          { name: "Lisa Anderson", type: "Health Review", time: "15:30", status: "Confirmed" },
+        ];
   };
 
   const [appointments, setAppointments] = useState(loadAppointments);
@@ -31,14 +60,12 @@ function MedicalSchedulePlanner() {
     status: "",
   });
 
-  // Save updates to localStorage
   useEffect(() => {
     localStorage.setItem("doctor-appointments", JSON.stringify(appointments));
   }, [appointments]);
 
-  const updateField = (field, value) => {
+  const updateField = (field, value) =>
     setFormData({ ...formData, [field]: value });
-  };
 
   const openAddModal = () => {
     setEditingIndex(null);
@@ -53,18 +80,16 @@ function MedicalSchedulePlanner() {
   };
 
   const saveSchedule = () => {
-    if (!formData.name || !formData.type || !formData.time || !formData.status) return;
+    if (!formData.name || !formData.type || !formData.time || !formData.status)
+      return;
 
     if (editingIndex !== null) {
-      // Update existing
       const updated = [...appointments];
       updated[editingIndex] = formData;
       setAppointments(updated);
     } else {
-      // Add new schedule
       setAppointments([...appointments, formData]);
     }
-
     setShowModal(false);
   };
 
@@ -73,84 +98,98 @@ function MedicalSchedulePlanner() {
     updated.splice(index, 1);
     setAppointments(updated);
   };
-  // DATE STATE
-const [currentDate, setCurrentDate] = useState(new Date());
 
-// Format the date
-const formatDate = (dateObj) => {
-  return dateObj.toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  });
-};
+  const [currentDate, setCurrentDate] = useState(new Date());
 
-// Go to previous day
-const goPrevDay = () => {
-  const newDate = new Date(currentDate);
-  newDate.setDate(newDate.getDate() - 1);
-  setCurrentDate(newDate);
-};
+  const formatDate = (dateObj) =>
+    dateObj.toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    });
 
-// Go to next day
-const goNextDay = () => {
-  const newDate = new Date(currentDate);
-  newDate.setDate(newDate.getDate() + 1);
-  setCurrentDate(newDate);
-};
+  const goPrevDay = () => {
+    const d = new Date(currentDate);
+    d.setDate(d.getDate() - 1);
+    setCurrentDate(d);
+  };
+
+  const goNextDay = () => {
+    const d = new Date(currentDate);
+    d.setDate(d.getDate() + 1);
+    setCurrentDate(d);
+  };
 
   return (
     <Doctordashboard>
-      <div className="w-full max-w-6xl mx-auto p-4 px-10">
-
+      <motion.div
+        variants={pageVariant}
+        initial="hidden"
+        animate="visible"
+        className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-6"
+      >
         {/* HEADER */}
-        <div className="flex justify-between items-center mb-10">
-          <h1 className="text-3xl font-bold text-gray-800">Schedule</h1>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <motion.h1
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-3xl font-bold text-gray-800"
+          >
+            Schedule
+          </motion.h1>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.92 }}
+            transition={{ type: "spring", stiffness: 300 }}
             className="bg-indigo-700 text-white px-5 py-2 rounded-lg flex items-center gap-2 hover:bg-indigo-800"
             onClick={openAddModal}
           >
             <i className="bi bi-plus-lg"></i> Add
-          </button>
+          </motion.button>
         </div>
 
-        {/* DATE NAV */}
-        {/* DATE NAVIGATION */}
-<div className="flex justify-center items-center gap-6 mb-10">
-  <button
-    className="text-gray-500 hover:text-gray-700 text-xl"
-    onClick={goPrevDay}
-  >
-    <i className="bi bi-chevron-left"></i>
-  </button>
+        {/* DATE */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="flex justify-center items-center gap-6 mb-10"
+        >
+          <motion.button whileTap={{ scale: 0.9 }} onClick={goPrevDay}>
+            <i className="bi bi-chevron-left text-xl text-gray-500"></i>
+          </motion.button>
 
-  <h2 className="text-xl font-semibold text-gray-800">
-    {formatDate(currentDate)}
-  </h2>
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+            {formatDate(currentDate)}
+          </h2>
 
-  <button
-    className="text-gray-500 hover:text-gray-700 text-xl"
-    onClick={goNextDay}
-  >
-    <i className="bi bi-chevron-right"></i>
-  </button>
-</div>
+          <motion.button whileTap={{ scale: 0.9 }} onClick={goNextDay}>
+            <i className="bi bi-chevron-right text-xl text-gray-500"></i>
+          </motion.button>
+        </motion.div>
 
-
-        {/* APPOINTMENT LIST */}
-        <div className="space-y-10">
+        {/* LIST */}
+        <motion.div variants={listVariant} initial="hidden" animate="visible" className="space-y-6">
           {appointments.map((a, index) => (
-            <div
+            <motion.div
               key={index}
-              className="bg-white border shadow rounded-xl p-5 flex items-center justify-between relative"
+              variants={itemVariant}
+              whileHover={{
+                y: -3,
+                boxShadow: "0px 12px 25px rgba(0,0,0,0.08)",
+              }}
+              className="bg-white border rounded-xl p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
             >
-
               {/* LEFT */}
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                <motion.div
+                  whileHover={{ rotate: 6 }}
+                  className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center"
+                >
                   <i className="bi bi-person text-indigo-500 text-2xl"></i>
-                </div>
+                </motion.div>
                 <div>
                   <p className="font-semibold text-gray-800 text-lg">{a.name}</p>
                   <p className="text-gray-500 text-sm">{a.type}</p>
@@ -158,93 +197,77 @@ const goNextDay = () => {
               </div>
 
               {/* RIGHT */}
-              <div className="flex items-center gap-6">
-                <div className="flex items-center gap-2 text-gray-500">
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 justify-between sm:justify-end">
+                <span className="flex items-center gap-2 text-gray-500">
                   <i className="bi bi-clock"></i>
                   {a.time}
-                </div>
-
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusStyles[a.status]}`}>
-                  {a.status}
                 </span>
 
-                {/* 3-DOTS MENU */}
-                <div className="relative group cursor-pointer">
-                  <i className="bi bi-three-dots-vertical text-xl text-gray-700"></i>
+                <motion.span
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 1.6, repeat: Infinity }}
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${statusStyles[a.status]}`}
+                >
+                  {a.status}
+                </motion.span>
 
-                  <div className="hidden group-hover:flex flex-col absolute right-0 top-6 bg-white shadow-lg border rounded-lg w-28 z-30">
-                    <button
-                      className="px-4 py-2 text-left hover:bg-gray-100"
-                      onClick={() => openEditModal(index)}
-                    >
+                <div className="relative group">
+                  <i className="bi bi-three-dots-vertical text-xl cursor-pointer"></i>
+                  <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="hidden group-hover:flex flex-col absolute right-0 top-6 bg-white shadow-lg border rounded-lg w-28 z-30"
+                  >
+                    <button onClick={() => openEditModal(index)} className="px-4 py-2 text-left hover:bg-gray-100">
                       Edit
                     </button>
-                    <button
-                      className="px-4 py-2 text-left text-red-600 hover:bg-gray-100"
-                      onClick={() => deleteSchedule(index)}
-                    >
+                    <button onClick={() => deleteSchedule(index)} className="px-4 py-2 text-left text-red-600 hover:bg-gray-100">
                       Delete
                     </button>
-                  </div>
+                  </motion.div>
                 </div>
               </div>
-
-            </div>
+            </motion.div>
           ))}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
-      {/* ADD / EDIT MODAL */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex justify-center items-center z-50">
-          <div className="bg-white w-[450px] p-8 rounded-2xl shadow-xl relative">
-
-            <button
-              className="absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-xl"
-              onClick={() => setShowModal(false)}
+      {/* MODAL */}
+      <AnimatePresence>
+        {showModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 flex justify-center items-center z-50 px-4"
+          >
+            <motion.div
+              initial={{ scale: 0.85, y: 30, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.85, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 220 }}
+              className="bg-white w-full max-w-md p-6 sm:p-8 rounded-2xl shadow-xl relative"
             >
-              ✖
-            </button>
+              <button className="absolute top-3 right-3 text-xl" onClick={() => setShowModal(false)}>✖</button>
 
-            <h2 className="text-2xl font-semibold mb-6">
-              {editingIndex !== null ? "Edit Schedule" : "Add New Schedule"}
-            </h2>
+              <h2 className="text-2xl font-semibold mb-6">
+                {editingIndex !== null ? "Edit Schedule" : "Add New Schedule"}
+              </h2>
 
-            <div className="space-y-5">
-              <div>
-                <label className="font-medium">Patient Name</label>
-                <input
-                  type="text"
-                  className="w-full bg-gray-100 rounded-xl px-4 py-3 mt-2"
-                  value={formData.name}
-                  onChange={(e) => updateField("name", e.target.value)}
-                />
-              </div>
+              <div className="space-y-4">
+                {["name", "type", "time"].map((f) => (
+                  <motion.input
+                    key={f}
+                    whileFocus={{ scale: 1.02 }}
+                    type={f === "time" ? "time" : "text"}
+                    className="w-full bg-gray-100 rounded-xl px-4 py-3"
+                    value={formData[f]}
+                    onChange={(e) => updateField(f, e.target.value)}
+                  />
+                ))}
 
-              <div>
-                <label className="font-medium">Consultation Type</label>
-                <input
-                  type="text"
-                  className="w-full bg-gray-100 rounded-xl px-4 py-3 mt-2"
-                  value={formData.type}
-                  onChange={(e) => updateField("type", e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label className="font-medium">Time</label>
-                <input
-                  type="time"
-                  className="w-full bg-gray-100 rounded-xl px-4 py-3 mt-2"
-                  value={formData.time}
-                  onChange={(e) => updateField("time", e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label className="font-medium">Status</label>
                 <select
-                  className="w-full bg-gray-100 rounded-xl px-4 py-3 mt-2"
+                  className="w-full bg-gray-100 rounded-xl px-4 py-3"
                   value={formData.status}
                   onChange={(e) => updateField("status", e.target.value)}
                 >
@@ -253,28 +276,25 @@ const goNextDay = () => {
                   <option value="Confirmed">Confirmed</option>
                   <option value="Completed">Completed</option>
                 </select>
+
+                <div className="flex justify-end gap-4 pt-4">
+                  <button onClick={() => setShowModal(false)} className="px-5 py-2 bg-gray-300 rounded-lg">
+                    Cancel
+                  </button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.92 }}
+                    className="px-5 py-2 bg-indigo-700 text-white rounded-lg"
+                    onClick={saveSchedule}
+                  >
+                    Save
+                  </motion.button>
+                </div>
               </div>
-
-              <div className="flex justify-end gap-4 mt-4">
-                <button
-                  className="px-5 py-2 bg-gray-300 rounded-lg"
-                  onClick={() => setShowModal(false)}
-                >
-                  Cancel
-                </button>
-
-                <button
-                  className="px-5 py-2 bg-indigo-700 text-white rounded-lg"
-                  onClick={saveSchedule}
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Doctordashboard>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Patientdashboard from "./Patientdashboard";
+import { motion, AnimatePresence } from "framer-motion";
 
 function Profile() {
   const [isEditing, setIsEditing] = useState(false);
@@ -19,224 +20,230 @@ function Profile() {
 
   return (
     <Patientdashboard>
-      <div className="w-full max-w-6xl mx-auto p-6">
+      {/* PAGE ANIMATION */}
+      <motion.div
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        className="w-full max-w-6xl mx-auto p-6"
+      >
 
         {/* ==================== EDIT POPUP ==================== */}
-        {isEditing && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex justify-center items-center z-50">
-            <div className="bg-white w-full max-w-2xl p-8 rounded-xl shadow-xl border">
+        <AnimatePresence>
+          {isEditing && (
+            <motion.div
+              className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex justify-center items-center z-50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.85, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.85 }}
+                transition={{ duration: 0.4 }}
+                className="bg-white w-full max-w-2xl p-8 rounded-xl shadow-xl border"
+              >
+                <h2 className="text-2xl font-semibold mb-6">Edit Profile</h2>
 
-              <h2 className="text-2xl font-semibold mb-6">Edit Profile</h2>
+                {/* FORM STAGGER */}
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    hidden: {},
+                    visible: { transition: { staggerChildren: 0.12 } },
+                  }}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                >
+                  {[
+                    ["Full Name", "name"],
+                    ["Email", "email"],
+                    ["Sex", "sex"],
+                    ["Age", "age"],
+                    ["Blood Group", "blood"],
+                    ["Status", "status"],
+                    ["Phone Number", "phone"],
+                    ["Date of Birth", "dob"],
+                    ["Street Address", "street"],
+                    ["City", "city"],
+                  ].map(([label, key]) => (
+                    <motion.div
+                      key={key}
+                      variants={{
+                        hidden: { opacity: 0, y: 12 },
+                        visible: { opacity: 1, y: 0 },
+                      }}
+                    >
+                      <label className="text-gray-600 text-sm mb-1 block">{label}</label>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                {/* Name */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">Full Name</label>
-                  <input
-                    type="text"
-                    value={profileData.name}
-                    onChange={(e) =>
-                      setProfileData({ ...profileData, name: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
+                      {key === "sex" ? (
+                        <select
+                          value={profileData.sex}
+                          onChange={(e) =>
+                            setProfileData({ ...profileData, sex: e.target.value })
+                          }
+                          className="border border-gray-300 rounded-lg px-3 py-2 w-full"
+                        >
+                          <option>Female</option>
+                          <option>Male</option>
+                          <option>Other</option>
+                        </select>
+                      ) : (
+                        <input
+                          type={key === "dob" ? "date" : key === "age" ? "number" : "text"}
+                          value={profileData[key]}
+                          onChange={(e) =>
+                            setProfileData({ ...profileData, [key]: e.target.value })
+                          }
+                          className="border border-gray-300 rounded-lg px-3 py-2 w-full"
+                        />
+                      )}
+                    </motion.div>
+                  ))}
+                </motion.div>
 
-                {/* Email */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">Email</label>
-                  <input
-                    type="text"
-                    value={profileData.email}
-                    onChange={(e) =>
-                      setProfileData({ ...profileData, email: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
-
-                {/* Sex */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">Sex</label>
-                  <select
-                    value={profileData.sex}
-                    onChange={(e) =>
-                      setProfileData({ ...profileData, sex: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
+                {/* BUTTONS */}
+                <div className="flex justify-end gap-4 mt-8">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    onClick={() => setIsEditing(false)}
+                    className="px-6 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg"
                   >
-                    <option>Female</option>
-                    <option>Male</option>
-                    <option>Other</option>
-                  </select>
+                    Cancel
+                  </motion.button>
+
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setIsEditing(false)}
+                    className="px-6 py-2 bg-indigo-900 text-white hover:bg-indigo-950 rounded-lg"
+                  >
+                    Save Changes
+                  </motion.button>
                 </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-                {/* Age */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">Age</label>
-                  <input
-                    type="number"
-                    value={profileData.age}
-                    onChange={(e) =>
-                      setProfileData({ ...profileData, age: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
-
-                {/* Blood Group */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">Blood Group</label>
-                  <input
-                    type="text"
-                    value={profileData.blood}
-                    onChange={(e) =>
-                      setProfileData({ ...profileData, blood: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
-
-                {/* Status */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">Status</label>
-                  <input
-                    type="text"
-                    value={profileData.status}
-                    onChange={(e) =>
-                      setProfileData({ ...profileData, status: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
-
-                {/* Phone */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">Phone Number</label>
-                  <input
-                    type="text"
-                    value={profileData.phone}
-                    onChange={(e) =>
-                      setProfileData({ ...profileData, phone: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
-
-                {/* DOB */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">Date of Birth</label>
-                  <input
-                    type="date"
-                    value={profileData.dob}
-                    onChange={(e) =>
-                      setProfileData({ ...profileData, dob: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
-
-                {/* Street */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">Street Address</label>
-                  <input
-                    type="text"
-                    value={profileData.street}
-                    onChange={(e) =>
-                      setProfileData({ ...profileData, street: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
-
-                {/* City */}
-                <div>
-                  <label className="text-gray-600 text-sm mb-1 block">City</label>
-                  <input
-                    type="text"
-                    value={profileData.city}
-                    onChange={(e) =>
-                      setProfileData({ ...profileData, city: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                  />
-                </div>
-
-              </div>
-
-              {/* BUTTONS */}
-              <div className="flex justify-end gap-4 mt-8">
-                <button
-                  onClick={() => setIsEditing(false)}
-                  className="px-6 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  onClick={() => setIsEditing(false)}
-                  className="px-6 py-2 bg-indigo-900 text-white hover:bg-indigo-950 rounded-lg"
-                >
-                  Save Changes
-                </button>
-              </div>
-
-            </div>
-          </div>
-        )}
-
-        {/* ==================== PROFILE VIEW ==================== */}
-        <div className="bg-white rounded-2xl shadow-md pl-8 py-10 border border-gray-200">
+        {/* ==================== PROFILE CARD ==================== */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          className="bg-white rounded-2xl shadow-md pl-8 py-10 border border-gray-200"
+        >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
 
-            {/* LEFT SIDE */}
-            <div className="flex flex-col items-center text-center border-r md:border-r-2 border-gray-200 pr-0 md:pr-6">
-
-              <img
+            {/* LEFT SIDE (Profile Pic & Name) */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col items-center text-center border-r md:border-r-2 border-gray-200 pr-0 md:pr-6"
+            >
+              <motion.img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&s"
                 alt="Profile"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 120, damping: 10 }}
                 className="w-32 h-32 rounded-full shadow-md"
               />
 
-              <h2 className="text-2xl font-semibold mt-6">{profileData.name}</h2>
-              <p className="text-gray-600 text-sm mt-2">{profileData.email}</p>
+              <motion.h2
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-2xl font-semibold mt-6"
+              >
+                {profileData.name}
+              </motion.h2>
 
-              <button
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="text-gray-600 text-sm mt-2"
+              >
+                {profileData.email}
+              </motion.p>
+
+              <motion.button
+                whileHover={{ scale: 1.07 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setIsEditing(true)}
                 className="mt-5 px-4 py-2 text-sm border rounded-lg text-indigo-700 border-indigo-700 hover:bg-indigo-900 hover:text-white transition"
               >
                 Edit Profile
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
 
-            {/* RIGHT SIDE DETAILS */}
-            <div className="md:col-span-2 grid grid-cols-2 gap-y-5 gap-x-8">
+            {/* RIGHT SIDE DETAILS - STAGGERED INFO */}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
+              className="md:col-span-2 grid grid-cols-2 gap-y-5 gap-x-8"
+            >
+              {Object.entries({
+                Sex: profileData.sex,
+                Age: profileData.age,
+                "Blood Group": profileData.blood,
+                Status: profileData.status,
+                "Phone No": profileData.phone,
+                "Date of Birth": profileData.dob,
+                "Street Address": profileData.street,
+                City: profileData.city,
+              }).map(([label, value]) => (
+                <motion.div
+                  key={label}
+                  variants={{
+                    hidden: { opacity: 0, y: 10 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                >
+                  <Info label={label} value={value} />
+                </motion.div>
+              ))}
+            </motion.div>
 
-              <Info label="Sex" value={profileData.sex} />
-              <Info label="Age" value={profileData.age} />
-              <Info label="Blood Group" value={profileData.blood} />
-              <Info label="Status" value={profileData.status} />
-              <Info label="Phone No" value={profileData.phone} />
-              <Info label="Date of Birth" value={profileData.dob} />
-              <Info label="Street Address" value={profileData.street} />
-              <Info label="City" value={profileData.city} />
-
-            </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* OVERVIEW */}
+        {/* ==================== OVERVIEW CARDS ==================== */}
         <h2 className="text-2xl font-semibold mt-10 mb-6">Patient Overview</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-          <Card label="Last Visit" value="12 Oct, 2024" status="Completed" color="text-green-600" />
-          <Card label="Upcoming Appointment" value="25 Jan, 2025" status="Scheduled" color="text-blue-600" />
-          <Card label="Total Reports" value="18 Reports" status="Available" color="text-purple-600" />
-          <Card label="Current Doctor" value="Dr. Ramesh Kumar" status="Assigned" color="text-orange-600" />
-        </div>
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.15 } },
+          }}
+          className="grid grid-cols-1 md:grid-cols-4 gap-10"
+        >
+          {[
+            ["Last Visit", "12 Oct, 2024", "Completed", "text-green-600"],
+            ["Upcoming Appointment", "25 Jan, 2025", "Scheduled", "text-blue-600"],
+            ["Total Reports", "18 Reports", "Available", "text-purple-600"],
+            ["Current Doctor", "Dr. Ramesh Kumar", "Assigned", "text-orange-600"],
+          ].map(([label, value, status, color], index) => (
+            <motion.div
+              key={index}
+              variants={{
+                hidden: { opacity: 0, scale: 0.94 },
+                visible: { opacity: 1, scale: 1 },
+              }}
+              whileHover={{ scale: 1.05 }}
+            >
+              <Card label={label} value={value} status={status} color={color} />
+            </motion.div>
+          ))}
+        </motion.div>
 
-      </div>
+      </motion.div>
     </Patientdashboard>
   );
 }

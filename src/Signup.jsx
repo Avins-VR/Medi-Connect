@@ -20,7 +20,7 @@ function Signup() {
         className="absolute top-4 md:top-6 left-1/2 -translate-x-1/2 
         text-2xl md:text-3xl font-bold text-gray-800 text-center"
       >
-        Health Connect
+        Medi Connect
       </h1>
 
       <div className="w-full max-w-[450px] mt-20 md:mt-20 bg-white/30 

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Patientdashboard from "./Patientdashboard";
+import { motion, AnimatePresence } from "framer-motion";
 
 function Medicinetaking() {
   const [medications, setMedications] = useState([
@@ -37,10 +38,8 @@ function Medicinetaking() {
     },
   ]);
 
-  // Add modal toggle
   const [showAddModal, setShowAddModal] = useState(false);
 
-  // New Medication input data
   const [newMed, setNewMed] = useState({
     name: "",
     category: "",
@@ -50,7 +49,6 @@ function Medicinetaking() {
     instructions: "",
   });
 
-  // Add medication function
   const handleAddMedication = () => {
     setMedications([...medications, newMed]);
     setNewMed({
@@ -66,199 +64,182 @@ function Medicinetaking() {
 
   return (
     <Patientdashboard>
-      <div className="w-full max-w-6xl mx-auto p-8 pb-20 relative">
-
-        {/* ================== ADD MEDICATION POPUP ================== */}
-        {showAddModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex justify-center items-center z-50">
-
-            <div className="bg-white w-full max-w-2xl p-8 rounded-xl shadow-xl border overflow-y-auto max-h-[80vh]">
-              <h2 className="text-2xl font-semibold mb-6">Add Medication</h2>
-
-              {/* Two Inputs Per Row */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                {/* Name */}
-                <div className="flex flex-col">
-                  <label className="text-gray-600 text-sm mb-2">Name</label>
-                  <input
-                    type="text"
-                    value={newMed.name}
-                    onChange={(e) =>
-                      setNewMed({ ...newMed, name: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2"
-                  />
-                </div>
-
-                {/* Category */}
-                <div className="flex flex-col">
-                  <label className="text-gray-600 text-sm mb-2">Category</label>
-                  <input
-                    type="text"
-                    value={newMed.category}
-                    onChange={(e) =>
-                      setNewMed({ ...newMed, category: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2"
-                  />
-                </div>
-
-                {/* Dosage */}
-                <div className="flex flex-col">
-                  <label className="text-gray-600 text-sm mb-2">Dosage</label>
-                  <input
-                    type="text"
-                    value={newMed.dosage}
-                    onChange={(e) =>
-                      setNewMed({ ...newMed, dosage: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2"
-                  />
-                </div>
-
-                {/* Frequency */}
-                <div className="flex flex-col">
-                  <label className="text-gray-600 text-sm mb-2">Frequency</label>
-                  <input
-                    type="text"
-                    value={newMed.frequency}
-                    onChange={(e) =>
-                      setNewMed({ ...newMed, frequency: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2"
-                  />
-                </div>
-
-                {/* Time */}
-                <div className="flex flex-col">
-                  <label className="text-gray-600 text-sm mb-2">Time</label>
-                  <input
-                    type="text"
-                    value={newMed.time}
-                    onChange={(e) =>
-                      setNewMed({ ...newMed, time: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2"
-                  />
-                </div>
-
-                {/* Instructions */}
-                <div className="flex flex-col">
-                  <label className="text-gray-600 text-sm mb-2">
-                    Instructions
-                  </label>
-                  <input
-                    type="text"
-                    value={newMed.instructions}
-                    onChange={(e) =>
-                      setNewMed({ ...newMed, instructions: e.target.value })
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2"
-                  />
-                </div>
-
-              </div>
-
-              {/* BUTTONS */}
-              <div className="flex justify-end gap-4 mt-8">
-                <button
-                  onClick={() => setShowAddModal(false)}
-                  className="px-6 py-2 rounded-lg bg-gray-300 hover:bg-gray-400"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  onClick={handleAddMedication}
-                  className="px-6 py-2 rounded-lg bg-indigo-900 text-white hover:bg-indigo-950"
-                >
+      {/* PAGE */}
+      <motion.div
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="
+          w-full max-w-6xl mx-auto
+          px-4 sm:px-6 lg:px-8
+          py-6 sm:py-8
+          pb-24
+          relative
+        "
+      >
+        {/* ================= ADD MODAL ================= */}
+        <AnimatePresence>
+          {showAddModal && (
+            <motion.div
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 px-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.4 }}
+                className="
+                  bg-white
+                  w-full max-w-xl sm:max-w-2xl
+                  p-5 sm:p-8
+                  rounded-xl
+                  shadow-xl
+                  max-h-[85vh]
+                  overflow-y-auto
+                "
+              >
+                <h2 className="text-xl sm:text-2xl font-semibold mb-6">
                   Add Medication
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+                </h2>
 
-        {/* ================== HEADER ================== */}
-        <h1 className="text-3xl font-bold text-center mt-[-30px] text-gray-900 mb-4">
+                <motion.div
+                  initial="hidden"
+                  animate="show"
+                  variants={{
+                    hidden: {},
+                    show: { transition: { staggerChildren: 0.12 } },
+                  }}
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6"
+                >
+                  {Object.keys(newMed).map((field) => (
+                    <motion.div
+                      key={field}
+                      variants={{
+                        hidden: { opacity: 0, y: 15 },
+                        show: { opacity: 1, y: 0 },
+                      }}
+                      className="flex flex-col"
+                    >
+                      <label className="text-gray-600 text-sm mb-1 capitalize">
+                        {field}
+                      </label>
+                      <input
+                        type="text"
+                        value={newMed[field]}
+                        onChange={(e) =>
+                          setNewMed({ ...newMed, [field]: e.target.value })
+                        }
+                        className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                      />
+                    </motion.div>
+                  ))}
+                </motion.div>
+
+                <div className="flex justify-end gap-3 sm:gap-4 mt-8">
+                  <button
+                    onClick={() => setShowAddModal(false)}
+                    className="px-5 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 text-sm"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    onClick={handleAddMedication}
+                    className="px-5 py-2 rounded-lg bg-indigo-900 text-white hover:bg-indigo-950 text-sm"
+                  >
+                    Add
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* HEADER */}
+        <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-2">
           Current Medications
         </h1>
-        <p className="text-gray-600 text-center mb-10">
+
+        <p className="text-gray-600 text-center mb-8 sm:mb-10 text-sm sm:text-base">
           Manage and track your prescribed medications
         </p>
 
-        {/* ================== MEDICATION LIST ================== */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        {/* MEDICATION CARDS */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{
+            visible: { transition: { staggerChildren: 0.12 } },
+          }}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10"
+        >
           {medications.map((med, index) => (
-            <div
+            <motion.div
               key={index}
-              className="bg-white rounded-2xl shadow-md p-6 border border-gray-100"
+              variants={{
+                hidden: { opacity: 0, y: 20, scale: 0.95 },
+                visible: { opacity: 1, y: 0, scale: 1 },
+              }}
+              whileHover={{ scale: 1.03 }}
+              className="
+                bg-white
+                rounded-2xl
+                shadow-md
+                p-4 sm:p-6
+                border
+              "
             >
-              <div className="flex items-center gap-5 mb-4">
-                <div className="bg-blue-100 text-indigo-600 px-4 py-3 mt-[-10px] rounded-full">
-                  <i className="bi bi-capsule text-[20px]"></i>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="bg-blue-100 text-indigo-600 px-3 py-2 rounded-full">
+                  <i className="bi bi-capsule text-lg sm:text-xl"></i>
                 </div>
 
                 <div>
-                  <h2 className="text-xl font-semibold mt-1">{med.name}</h2>
-                  <p className="text-gray-500 text-sm mt-1 mb-4">
+                  <h2 className="text-lg sm:text-xl font-semibold">
+                    {med.name}
+                  </h2>
+                  <p className="text-gray-500 text-xs sm:text-sm">
                     {med.category}
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-4 text-gray-700">
-                <p className="flex items-center gap-4">
-                  <i className="bi bi-droplet text-blue-500"></i>
-                  <strong>Dosage:</strong> {med.dosage}
-                </p>
+              <div className="space-y-3 text-gray-700 text-sm sm:text-base">
+                <p><strong>Dosage:</strong> {med.dosage}</p>
+                <p><strong>Frequency:</strong> {med.frequency}</p>
+                <p><strong>Time:</strong> {med.time}</p>
 
-                <p className="flex items-center gap-4">
-                  <i className="bi bi-clock-history text-blue-500"></i>
-                  <strong>Frequency:</strong> {med.frequency}
-                </p>
+                <hr />
 
-                <p className="flex items-center gap-4">
-                  <i className="bi bi-alarm text-blue-500"></i>
-                  <strong>Time:</strong> {med.time}
-                </p>
-
-                <hr className="border-t border-gray-300 my-4" />
-
-                <p className="text-sm mt-4">
-                  <strong>Instructions:</strong>{" "}
-                  <span className="text-gray-600">{med.instructions}</span>
+                <p className="text-sm text-gray-600">
+                  <strong>Instructions:</strong> {med.instructions}
                 </p>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
-        {/* ================== ADD BUTTON ================== */}
+        {/* FLOATING ADD BUTTON */}
         <button
           onClick={() => setShowAddModal(true)}
           className="
-            fixed 
-            bottom-5 
-            right-20 
-            bg-indigo-900 
-            hover:bg-indigo-800 
-            text-white 
-            rounded-xl 
-            w-12 
-            h-12 
-            flex 
-            items-center 
-            justify-center 
-            shadow-2xl 
-            text-xl
+            fixed
+            bottom-5 right-5 sm:right-8
+            bg-indigo-900 hover:bg-indigo-800
+            text-white
+            rounded-xl
+            w-11 h-11 sm:w-12 sm:h-12
+            flex items-center justify-center
+            shadow-2xl
+            text-lg
           "
         >
           <i className="bi bi-plus-lg"></i>
         </button>
-
-      </div>
+      </motion.div>
     </Patientdashboard>
   );
 }

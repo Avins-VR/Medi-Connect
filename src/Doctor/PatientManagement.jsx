@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import Doctordashboard from "./Doctordashboard";
 
 function PatientManagement() {
@@ -10,66 +11,16 @@ function PatientManagement() {
   ];
 
   const initialPatients = [
-    {
-      name: "Willy Ben Chen",
-      age: 27,
-      dob: "10-02-1998",
-      gender: "Male",
-      diagnosis: "Diabetes",
-      last_appointment: "10-04-2025",
-      status: "Stable",
-      img: "https://i.pravatar.cc/80?img=1"
-    },
-    {
-      name: "Emily Watford",
-      age: 37,
-      dob: "20-01-1988",
-      gender: "Female",
-      diagnosis: "Hypertension",
-      last_appointment: "09-04-2025",
-      status: "Critical",
-      img: "https://i.pravatar.cc/80?img=2"
-    },
-    {
-      name: "Nicholas Robertson",
-      age: 25,
-      dob: "24-06-1999",
-      gender: "Male",
-      diagnosis: "Anxiety Disorder",
-      last_appointment: "08-04-2025",
-      status: "Stable",
-      img: "https://i.pravatar.cc/80?img=3"
-    },
-    {
-      name: "Sophia Martinez",
-      age: 30,
-      dob: "15-03-1994",
-      gender: "Female",
-      diagnosis: "Asthma",
-      last_appointment: "07-04-2025",
-      status: "Mild",
-      img: "https://i.pravatar.cc/80?img=4"
-    },
-    {
-      name: "Liam Johnson",
-      age: 45,
-      dob: "05-11-1978",
-      gender: "Male",
-      diagnosis: "Arthritis",
-      last_appointment: "06-04-2025",
-      status: "Stable",
-      img: "https://i.pravatar.cc/80?img=5"
-    }
+    { name: "Willy Ben Chen", age: 27, dob: "10-02-1998", gender: "Male", diagnosis: "Diabetes", last_appointment: "10-04-2025", status: "Stable", img: "https://i.pravatar.cc/80?img=1" },
+    { name: "Emily Watford", age: 37, dob: "20-01-1988", gender: "Female", diagnosis: "Hypertension", last_appointment: "09-04-2025", status: "Critical", img: "https://i.pravatar.cc/80?img=2" },
+    { name: "Nicholas Robertson", age: 25, dob: "24-06-1999", gender: "Male", diagnosis: "Anxiety Disorder", last_appointment: "08-04-2025", status: "Stable", img: "https://i.pravatar.cc/80?img=3" },
+    { name: "Sophia Martinez", age: 30, dob: "15-03-1994", gender: "Female", diagnosis: "Asthma", last_appointment: "07-04-2025", status: "Mild", img: "https://i.pravatar.cc/80?img=4" },
+    { name: "Liam Johnson", age: 45, dob: "05-11-1978", gender: "Male", diagnosis: "Arthritis", last_appointment: "06-04-2025", status: "Stable", img: "https://i.pravatar.cc/80?img=5" },
   ];
 
-  const [patients, setPatients] = useState(initialPatients);
-  const [openMenu, setOpenMenu] = useState(null);
+  const [patients] = useState(initialPatients);
   const [searchText, setSearchText] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
-
-  // FOR EDIT POPUP
-  const [editModal, setEditModal] = useState(false);
-  const [editData, setEditData] = useState(null);
 
   const statusStyle = {
     Stable: "bg-green-100 text-green-600",
@@ -77,75 +28,77 @@ function PatientManagement() {
     Critical: "bg-red-100 text-red-600",
   };
 
-  // FILTER & SEARCH LOGIC
-  const filteredPatients = patients.filter((p) => {
-    const matchesSearch = p.name.toLowerCase().includes(searchText.toLowerCase());
-    const matchesStatus = filterStatus === "All" || p.status === filterStatus;
-    return matchesSearch && matchesStatus;
-  });
-
-  // DELETE PATIENT
-  const deletePatient = (index) => {
-    setPatients(patients.filter((_, i) => i !== index));
-    setOpenMenu(null);
-  };
-
-  // OPEN EDIT MODAL
-  const openEdit = (patient, index) => {
-    setEditData({ ...patient, index });
-    setEditModal(true);
-    setOpenMenu(null);
-  };
-
-  // SAVE EDITED PATIENT
-  const saveEdit = () => {
-    const updated = [...patients];
-    updated[editData.index] = { ...editData };
-    setPatients(updated);
-    setEditModal(false);
-  };
+  const filteredPatients = patients.filter(
+    (p) =>
+      p.name.toLowerCase().includes(searchText.toLowerCase()) &&
+      (filterStatus === "All" || p.status === filterStatus)
+  );
 
   return (
     <Doctordashboard>
-      <div className="w-full max-w-7xl mx-auto p-10">
-
-        {/* HEADER */}
-        <h1 className="text-3xl font-bold mb-8 mt-[-20px]">Patient Management</h1>
+      {/* PAGE ANIMATION */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 90, damping: 15 }}
+        className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6"
+      >
+        {/* TITLE */}
+        <motion.h1
+          initial={{ opacity: 0, y: -15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-2xl sm:text-3xl font-bold mb-6"
+        >
+          Patient Management
+        </motion.h1>
 
         {/* STATS */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.12 } },
+          }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+        >
           {stats.map((s, i) => (
-            <div key={i} className="rounded-xl p-6 shadow-sm bg-white">
-              <div className="flex items-center gap-6">
-                <div className={`text-3xl ${s.text}`}>
-                  <i className={`bi ${s.icon}`}></i>
-                </div>
+            <motion.div
+              key={i}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              whileHover={{ y: -6, boxShadow: "0 15px 30px rgba(0,0,0,0.08)" }}
+              transition={{ type: "spring", stiffness: 250 }}
+              className="bg-white p-4 rounded-xl shadow cursor-pointer"
+            >
+              <div className="flex items-center gap-4">
+                <i className={`bi ${s.icon} text-2xl ${s.text}`}></i>
                 <div>
-                  <p className={`text-2xl font-bold ${s.text}`}>{s.count}</p>
-                  <p className="text-gray-600">{s.label}</p>
+                  <p className={`text-xl font-bold ${s.text}`}>{s.count}</p>
+                  <p className="text-gray-600 text-sm">{s.label}</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* SEARCH + FILTER */}
-        <div className="flex flex-wrap justify-between items-center mb-8 gap-4">
-          <div className="relative w-[800px]">
-  <i className="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg"></i>
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <motion.input
+            whileFocus={{ scale: 1.02 }}
+            type="text"
+            placeholder="Search patient..."
+            className="w-full bg-white px-4 py-3 border rounded-lg"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
 
-  <input
-    type="text"
-    placeholder="Search patient..."
-    className="bg-white pl-12 pr-4 py-3 border border-gray-400 rounded-lg w-full"
-    value={searchText}
-    onChange={(e) => setSearchText(e.target.value)}
-  />
-</div>
-
-
-          <select
-            className=" bg-white px-4 w-[200px] py-3 border border-gray-400 rounded-lg"
+          <motion.select
+            whileHover={{ scale: 1.02 }}
+            className="w-full sm:w-48 bg-white px-4 py-3 border rounded-lg"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
           >
@@ -153,122 +106,88 @@ function PatientManagement() {
             <option value="Stable">Stable</option>
             <option value="Mild">Mild</option>
             <option value="Critical">Critical</option>
-          </select>
+          </motion.select>
         </div>
 
-        {/* TABLE */}
-        <div className="bg-white shadow-lg rounded-2xl border border-gray-100 p-6">
+        {/* MOBILE / TABLET CARDS */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:hidden">
+          {filteredPatients.map((p, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+              whileHover={{ y: -4, boxShadow: "0 12px 24px rgba(0,0,0,0.08)" }}
+              className="bg-white p-4 rounded-xl shadow"
+            >
+              <div className="flex items-center gap-4 mb-3">
+                <img src={p.img} className="w-12 h-12 rounded-full" />
+                <div>
+                  <p className="font-semibold">{p.name}</p>
+                  <p className="text-xs text-gray-500">{p.dob}</p>
+                </div>
+              </div>
+
+              <div className="text-sm space-y-1">
+                <p><b>Age:</b> {p.age}</p>
+                <p><b>Gender:</b> {p.gender}</p>
+                <p><b>Diagnosis:</b> {p.diagnosis}</p>
+                <p><b>Last Visit:</b> {p.last_appointment}</p>
+              </div>
+
+              <span className={`inline-block mt-3 px-3 py-1 rounded-full text-xs ${statusStyle[p.status]}`}>
+                {p.status}
+              </span>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* DESKTOP TABLE */}
+        <div className="hidden lg:block bg-white shadow rounded-2xl overflow-hidden">
           <table className="w-full text-left">
-            <thead>
-              <tr className="text-gray-700 text-lg font-semibold border-b">
-                <th className="py-4 pl-5">Name</th>
-                <th className="py-4">Last Appointment</th>
-                <th className="py-4">Age</th>
-                <th className="py-4">Gender</th>
-                <th className="py-4">Diagnosis</th>
-                <th className="py-4">Status</th>
-                <th className="py-4"></th>
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="p-4">Name</th>
+                <th className="p-4">Last Appointment</th>
+                <th className="p-4">Age</th>
+                <th className="p-4">Gender</th>
+                <th className="p-4">Diagnosis</th>
+                <th className="p-4">Status</th>
               </tr>
             </thead>
-
             <tbody>
               {filteredPatients.map((p, i) => (
-                <tr key={i} className="border-b hover:bg-gray-50">
-
-                  {/* NAME */}
-                  <td className="py-5 pl-5 flex items-center gap-4">
+                <motion.tr
+                  key={i}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: i * 0.04 }}
+                  whileHover={{ backgroundColor: "#f5f7ff" }}
+                  className="border-t"
+                >
+                  <td className="p-4 flex items-center gap-3">
                     <img src={p.img} className="w-10 h-10 rounded-full" />
                     <div>
                       <p className="font-medium">{p.name}</p>
                       <p className="text-xs text-gray-500">{p.dob}</p>
                     </div>
                   </td>
-
-                  <td>{p.last_appointment}</td>
-                  <td>{p.age}</td>
-                  <td>{p.gender}</td>
-                  <td>{p.diagnosis}</td>
-
-                  <td>
-                    <span className={`px-3 py-1 rounded-full text-sm ${statusStyle[p.status]}`}>
+                  <td className="p-4">{p.last_appointment}</td>
+                  <td className="p-4">{p.age}</td>
+                  <td className="p-4">{p.gender}</td>
+                  <td className="p-4">{p.diagnosis}</td>
+                  <td className="p-4">
+                    <span className={`px-3 py-1 rounded-full text-xs ${statusStyle[p.status]}`}>
                       {p.status}
                     </span>
                   </td>
-
-                  {/* ACTION MENU */}
-                  <td className="relative text-right pr-6">
-                    <button onClick={() => setOpenMenu(openMenu === i ? null : i)}>
-                      <i className="bi bi-three-dots-vertical text-xl"></i>
-                    </button>
-
-                    {openMenu === i && (
-                      <div className="absolute right-0 top-10 bg-white shadow-lg rounded-lg w-32 border">
-                        <button
-                          className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-                          onClick={() => openEdit(p, i)}
-                        >
-                          Edit
-                        </button>
-
-                        <button
-                          className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100"
-                          onClick={() => deletePatient(i)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    )}
-                  </td>
-
-                </tr>
+                </motion.tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
 
-      {/* EDIT MODAL */}
-      {editModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-8 ml-[150px] rounded-xl w-[450px] relative shadow-lg">
-
-            <button className="absolute top-4 right-4" onClick={() => setEditModal(false)}>✖</button>
-
-            <h2 className="text-2xl font-semibold mb-4">Edit Patient</h2>
-
-            {/* Fields */}
-            <input
-              value={editData.name}
-              onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-              className="w-full bg-gray-100 rounded-lg px-4 py-3 mb-4"
-            />
-
-            <input
-              value={editData.diagnosis}
-              onChange={(e) => setEditData({ ...editData, diagnosis: e.target.value })}
-              className="w-full bg-gray-100 rounded-lg px-4 py-3 mb-4"
-            />
-
-            <select
-              value={editData.status}
-              onChange={(e) => setEditData({ ...editData, status: e.target.value })}
-              className="w-full bg-gray-100 rounded-lg px-4 py-3 mb-4"
-            >
-              <option>Stable</option>
-              <option>Mild</option>
-              <option>Critical</option>
-            </select>
-
-            <button
-              className="bg-indigo-600 w-full py-3 rounded-lg text-white font-medium"
-              onClick={saveEdit}
-            >
-              Save Changes
-            </button>
-
-          </div>
-        </div>
-      )}
+      </motion.div>
     </Doctordashboard>
   );
 }
