@@ -171,7 +171,7 @@ function MedicalSchedulePlanner() {
         </motion.div>
 
         {/* LIST */}
-        <motion.div variants={listVariant} initial="hidden" animate="visible" className="space-y-6">
+        <motion.div className="space-y-6">
           {appointments.map((a, index) => (
             <motion.div
               key={index}

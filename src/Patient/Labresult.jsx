@@ -168,12 +168,6 @@ function LabResults() {
           </div>
 
           <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-              hidden: {},
-              visible: { transition: { staggerChildren: 0.08 } },
-            }}
           >
             {results.map((r, i) => (
               <motion.div

@@ -189,14 +189,8 @@ function Prescriptions() {
 
         {/* ================= PRESCRIPTION CARDS ================= */}
         <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.18 } },
-          }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-16 justify-items-center"
-        >
+  className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-16 justify-items-center"
+>
           {prescriptions.map((p) => (
             <motion.div
               key={p.id}

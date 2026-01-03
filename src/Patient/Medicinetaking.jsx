@@ -50,6 +50,8 @@ function Medicinetaking() {
   });
 
   const handleAddMedication = () => {
+    if (!newMed.name) return;
+
     setMedications([...medications, newMed]);
     setNewMed({
       name: "",
@@ -66,16 +68,10 @@ function Medicinetaking() {
     <Patientdashboard>
       {/* PAGE */}
       <motion.div
-        initial={{ opacity: 0, y: 25 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="
-          w-full max-w-6xl mx-auto
-          px-4 sm:px-6 lg:px-8
-          py-6 sm:py-8
-          pb-24
-          relative
-        "
+        transition={{ duration: 0.3 }}
+        className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24"
       >
         {/* ================= ADD MODAL ================= */}
         <AnimatePresence>
@@ -87,42 +83,19 @@ function Medicinetaking() {
               exit={{ opacity: 0 }}
             >
               <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4 }}
-                className="
-                  bg-white
-                  w-full max-w-xl sm:max-w-2xl
-                  p-5 sm:p-8
-                  rounded-xl
-                  shadow-xl
-                  max-h-[85vh]
-                  overflow-y-auto
-                "
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.25 }}
+                className="bg-white w-full max-w-2xl p-6 sm:p-8 rounded-xl shadow-xl max-h-[85vh] overflow-y-auto"
               >
                 <h2 className="text-xl sm:text-2xl font-semibold mb-6">
                   Add Medication
                 </h2>
 
-                <motion.div
-                  initial="hidden"
-                  animate="show"
-                  variants={{
-                    hidden: {},
-                    show: { transition: { staggerChildren: 0.12 } },
-                  }}
-                  className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6"
-                >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   {Object.keys(newMed).map((field) => (
-                    <motion.div
-                      key={field}
-                      variants={{
-                        hidden: { opacity: 0, y: 15 },
-                        show: { opacity: 1, y: 0 },
-                      }}
-                      className="flex flex-col"
-                    >
+                    <div key={field} className="flex flex-col">
                       <label className="text-gray-600 text-sm mb-1 capitalize">
                         {field}
                       </label>
@@ -134,9 +107,9 @@ function Medicinetaking() {
                         }
                         className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
                       />
-                    </motion.div>
+                    </div>
                   ))}
-                </motion.div>
+                </div>
 
                 <div className="flex justify-end gap-3 sm:gap-4 mt-8">
                   <button
@@ -168,74 +141,99 @@ function Medicinetaking() {
         </p>
 
         {/* MEDICATION CARDS */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={{
-            visible: { transition: { staggerChildren: 0.12 } },
-          }}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10"
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10">
           {medications.map((med, index) => (
             <motion.div
               key={index}
-              variants={{
-                hidden: { opacity: 0, y: 20, scale: 0.95 },
-                visible: { opacity: 1, y: 0, scale: 1 },
-              }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25 }}
               whileHover={{ scale: 1.03 }}
-              className="
-                bg-white
-                rounded-2xl
-                shadow-md
-                p-4 sm:p-6
-                border
-              "
+              className="bg-white rounded-2xl shadow-md p-4 sm:p-6 border"
             >
+              {/* HEADER */}
               <div className="flex items-center gap-4 mb-4">
-                <div className="bg-blue-100 text-indigo-600 px-3 py-2 rounded-full">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 180, damping: 12 }}
+                  className="bg-blue-100 text-indigo-600 px-3 py-2 rounded-full"
+                >
                   <i className="bi bi-capsule text-lg sm:text-xl"></i>
-                </div>
+                </motion.div>
 
                 <div>
-                  <h2 className="text-lg sm:text-xl font-semibold">
+                  <motion.h2
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="text-lg sm:text-xl font-semibold"
+                  >
                     {med.name}
-                  </h2>
-                  <p className="text-gray-500 text-xs sm:text-sm">
+                  </motion.h2>
+
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.05 }}
+                    className="text-gray-500 text-xs sm:text-sm"
+                  >
                     {med.category}
-                  </p>
+                  </motion.p>
                 </div>
               </div>
 
-              <div className="space-y-3 text-gray-700 text-sm sm:text-base">
-                <p><strong>Dosage:</strong> {med.dosage}</p>
-                <p><strong>Frequency:</strong> {med.frequency}</p>
-                <p><strong>Time:</strong> {med.time}</p>
+              {/* DETAILS */}
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: {},
+                  visible: { transition: { staggerChildren: 0.05 } },
+                }}
+                className="space-y-3 text-gray-700 text-sm sm:text-base"
+              >
+                {[
+                  ["Dosage", med.dosage],
+                  ["Frequency", med.frequency],
+                  ["Time", med.time],
+                ].map(([label, value], i) => (
+                  <motion.p
+                    key={i}
+                    variants={{
+                      hidden: { opacity: 0, x: -8 },
+                      visible: { opacity: 1, x: 0 },
+                    }}
+                  >
+                    <strong>{label}:</strong> {value}
+                  </motion.p>
+                ))}
 
-                <hr />
+                <motion.hr
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: { opacity: 1 },
+                  }}
+                />
 
-                <p className="text-sm text-gray-600">
+                <motion.p
+                  variants={{
+                    hidden: { opacity: 0, y: 6 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                  className="text-sm text-gray-600"
+                >
                   <strong>Instructions:</strong> {med.instructions}
-                </p>
-              </div>
+                </motion.p>
+              </motion.div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
         {/* FLOATING ADD BUTTON */}
         <button
           onClick={() => setShowAddModal(true)}
-          className="
-            fixed
-            bottom-5 right-5 sm:right-8
-            bg-indigo-900 hover:bg-indigo-800
-            text-white
-            rounded-xl
-            w-11 h-11 sm:w-12 sm:h-12
-            flex items-center justify-center
-            shadow-2xl
-            text-lg
-          "
+          className="fixed bottom-5 right-5 sm:right-8 bg-indigo-900 hover:bg-indigo-800 text-white rounded-xl w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center shadow-2xl text-lg"
         >
           <i className="bi bi-plus-lg"></i>
         </button>
