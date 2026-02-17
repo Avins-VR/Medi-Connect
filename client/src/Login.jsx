@@ -59,7 +59,13 @@ useEffect(() => {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
+      let data;
+try {
+  data = await response.json();
+} catch {
+  throw new Error("Invalid server response");
+}
+
 
       if (!response.ok) {
         setError(data.message || "Login failed");
@@ -77,8 +83,9 @@ useEffect(() => {
         navigate("/Patient/home");
       }
     } catch (err) {
-      setError("Server not reachable. Try again later.");
-    }
+  console.error(err);
+  setError("Network error or server unreachable");
+}
   };
 
   return (
