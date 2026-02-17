@@ -22,7 +22,7 @@ function Profile() {
   /* ================= FETCH PROFILE ================= */
   useEffect(() => {
     const fetchProfileAndAppointment = async () => {
-      const res = await fetch("http://localhost:5000/api/profile/me", {
+      const res = await fetch("https://medi-connect-rncy.onrender.com/api/profile/me", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -53,7 +53,7 @@ function Profile() {
   /* ================= SAVE PROFILE ================= */
   const handleSaveProfile = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/profile/update", {
+      const res = await fetch("https://medi-connect-rncy.onrender.com/api/profile/update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

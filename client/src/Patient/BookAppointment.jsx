@@ -26,24 +26,25 @@ function AppointmentPage() {
 
     try {
       const res = await fetch(
-        "http://localhost:5000/api/appointments/book",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({
-            patientName,
-            mobile,
-            date,
-            time,
-            consultationType,
-            doctorName: doctor,
-            message,
-          }),
-        }
-      );
+  "https://medi-connect-rncy.onrender.com/api/appointments/book",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({
+      patientName,
+      mobile,
+      date,
+      time,
+      consultationType,
+      doctorName: doctor,
+      message,
+    }),
+  }
+);
+
 
       const data = await res.json();
 

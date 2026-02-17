@@ -10,7 +10,7 @@ export default function UpcomingAppointment() {
     const fetchAppointments = async () => {
       try {
         const res = await fetch(
-          "http://localhost:5000/api/appointments/my",
+          "https://medi-connect-rncy.onrender.com/api/appointments/my",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
